@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}DesignVault Dashboard{% endblock %}
+
+{% block content %}
+<header class="topbar">
+  <a class="brand-row" href="{{ url_for('dashboard') }}">
+    <div class="brand-mark">DV</div>
+    <span>DesignVault</span>
+  </a>
+  <nav class="top-actions" aria-label="Dashboard">
+    <a href="#brief">Brief</a>
+    <a href="#vault">Vault</a>
+    <a href="#presets">Presets</a>
+    <form method="post" action="{{ url_for('logout') }}">
+      <button class="ghost-btn" type="submit">Logout</button>
+    </form>
+  </nav>
+</header>
+
+<main class="dashboard-shell">
+  <section class="dashboard-hero" data-reveal>
+    <div>
+      <p class="eyebrow">Welcome, {{ user.name }}</p>
+      <h1>Your design command centre.</h1>
+      <p>Generate directions, compare palettes, and keep the best visual routes in one fast-moving vault.</p>
+    </div>
+    <aside class="score-tower" aria-label="Vault score">
+      <span>Vault fit score</span>
+      <strong>{{ avg_score }}</strong>
+      <small>{{ saved_count }} saved directions</small>
+    </aside>
+  </section>
+
+  <section class="metric-strip" data-reveal>
+    <article>
+      <span>Inspirations</span>
+      <strong>{{ vault.inspirations|length }}</strong>
+    </article>
+    <article>
+      <span>Saved</span>
+      <strong>{{ saved_count }}</strong>
+    </article>
+    <article>
+      <span>Briefs</span>
+      <strong>{{ vault.briefs|length }}</strong>
+    </article>
+    <article>
+      <span>Current filter</span>
+      <strong>{{ category }} / {{ style }}</strong>
+    </article>
+  </section>
+
+  <section class="work-grid">
+    <form id="brief" class="brief-lab" method="post" action="{{ url_for('add_brief') }}" data-reveal>
+      <p class="eyebrow">Guided builder</p>
+      <h2>Create a direction</h2>
+      <label>
+        Brand or project
+        <input name="business" placeholder="Aurora Labs" required>
+      </label>
+      <label>
+        Industry
+        <input name="industry" placeholder="SaaS, fashion, finance..." required>
+      </label>
+      <label>
+        Style
+        <select name="style">
+          {% for preset in presets.keys() %}
+            <option value="{{ preset }}">{{ preset }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button class="primary-btn" type="submit">Generate direction <span aria-hidden="true">-></span></button>
+    </form>
+
+    <section class="brief-history" data-reveal>
+      <p class="eyebrow">Latest briefs</p>
+      <h2>Recent outputs</h2>
+      {% if vault.briefs %}
+        <div class="mini-list">
+          {% for brief in vault.briefs[:4] %}
+            <article class="mini-item">
+              <div>
+                <strong>{{ brief.business }}</strong>
+                <span>{{ brief.industry }} / {{ brief.style }}</span>
+              </div>
+              <div class="palette" aria-label="Palette">
+                {% for color in brief.colors %}
+                  <i style="background: {{ color }}"></i>
+                {% endfor %}
+              </div>
+              <b>{{ brief.score }}</b>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-copy">Create your first direction and it will appear here.</p>
+      {% endif %}
+    </section>
+  </section>
+
+  <section class="filter-band" data-reveal>
+    <div>
+      <p class="eyebrow">Reference scanner</p>
+      <h2>Vault inspirations</h2>
+    </div>
+    <form method="get" class="filter-form">
+      <select name="category">
+        {% for option in categories %}
+          <option value="{{ option }}" {% if option == category %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      <select name="style">
+        {% for option in styles %}
+          <option value="{{ option }}" {% if option == style %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      <button class="ghost-btn" type="submit">Filter</button>
+    </form>
+  </section>
+
+  <section id="vault" class="vault-grid">
+    {% for item in inspirations %}
+      <article class="inspiration-card" data-reveal>
+        <div class="scanline"></div>
+        <div class="card-meta">
+          <span>{{ item.category }}</span>
+          <b>{{ item.style }}</b>
+        </div>
+        <h3>{{ item.name }}</h3>
+        <div class="palette large" aria-label="Palette">
+          {% for color in item.colors %}
+            <i style="background: {{ color }}"></i>
+          {% endfor %}
+        </div>
+        <div class="card-score">
+          <span>Visual fit</span>
+          <strong>{{ item.score }}</strong>
+        </div>
+        <div class="card-actions">
+          <form method="post" action="{{ url_for('inspiration_action', item_id=item.id, action='save') }}">
+            <button class="ghost-btn" type="submit">{{ "Unsave" if item.saved else "Save" }}</button>
+          </form>
+          <form method="post" action="{{ url_for('inspiration_action', item_id=item.id, action='boost') }}">
+            <button class="ghost-btn" type="submit">Boost</button>
+          </form>
+          <form method="post" action="{{ url_for('inspiration_action', item_id=item.id, action='delete') }}">
+            <button class="danger-btn" type="submit">Delete</button>
+          </form>
+        </div>
+      </article>
+    {% endfor %}
+  </section>
+
+  <section id="presets" class="preset-runway" data-reveal>
+    <div>
+      <p class="eyebrow">Style presets</p>
+      <h2>Colour systems ready to launch.</h2>
+    </div>
+    <div class="preset-grid">
+      {% for name, colors in presets.items() %}
+        <article>
+          <strong>{{ name }}</strong>
+          <div class="palette large" aria-label="{{ name }} palette">
+            {% for color in colors %}
+              <i style="background: {{ color }}"></i>
+            {% endfor %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+{% endblock %}

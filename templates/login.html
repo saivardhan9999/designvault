@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}DesignVault Login{% endblock %}
+
+{% block content %}
+<main class="login-shell">
+  <section class="login-hero" data-reveal>
+    <nav class="brand-row" aria-label="Brand">
+      <div class="brand-mark">DV</div>
+      <span>DesignVault</span>
+    </nav>
+    <div class="hero-copy">
+      <p class="eyebrow">AI-style design operating room</p>
+      <h1>Turn raw taste into a launch-ready visual system.</h1>
+      <p>
+        Build moodboards, score palettes, save references, and generate a sharp
+        design direction before the first pixel gets wasted.
+      </p>
+    </div>
+    <div class="process-grid" aria-label="Design process">
+      <article class="process-card">
+        <span>01</span>
+        <strong>Brand DNA</strong>
+        <small>Capture the idea, audience, and category.</small>
+      </article>
+      <article class="process-card">
+        <span>02</span>
+        <strong>Style Match</strong>
+        <small>Choose bold, luxury, minimal, playful, or corporate.</small>
+      </article>
+      <article class="process-card">
+        <span>03</span>
+        <strong>Palette Score</strong>
+        <small>Compare colour systems with visual fit scores.</small>
+      </article>
+      <article class="process-card">
+        <span>04</span>
+        <strong>Launch Board</strong>
+        <small>Save the strongest directions into your vault.</small>
+      </article>
+    </div>
+  </section>
+
+  <section class="auth-panel" data-reveal>
+    <div class="panel-topline"></div>
+    <p class="eyebrow">Secure workspace</p>
+    <h2>{{ "Create Vault" if mode == "register" else "Login" }}</h2>
+    {% if message %}
+      <p class="message">{{ message }}</p>
+    {% endif %}
+    <form method="post" class="stacked-form">
+      <input type="hidden" name="mode" value="{{ mode }}">
+      {% if mode == "register" %}
+        <label>
+          Name
+          <input name="name" placeholder="Sai Vardhan" autocomplete="name">
+        </label>
+      {% endif %}
+      <label>
+        Email
+        <input type="email" name="email" placeholder="you@example.com" autocomplete="email">
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" placeholder="Demo password" autocomplete="current-password">
+      </label>
+      <button class="primary-btn" type="submit">
+        {{ "Build my vault" if mode == "register" else "Enter vault" }}
+        <span aria-hidden="true">-></span>
+      </button>
+    </form>
+    <a class="mode-link" href="{{ url_for('login') }}?mode={{ 'login' if mode == 'register' else 'register' }}">
+      {{ "Already have an account?" if mode == "register" else "Need an account?" }}
+    </a>
+  </section>
+</main>
+{% endblock %}
