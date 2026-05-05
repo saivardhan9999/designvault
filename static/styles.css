@@ -508,13 +508,14 @@ select option {
   background: rgba(0, 0, 0, 0.22);
 }
 
-[data-reveal] {
+html.can-reveal [data-reveal] {
   opacity: 0;
   transform: translateY(24px) scale(0.98);
   transition: opacity 0.7s ease var(--delay, 0ms), transform 0.7s ease var(--delay, 0ms);
 }
 
-[data-reveal].is-visible {
+html.can-reveal [data-reveal].is-visible,
+[data-reveal] {
   opacity: 1;
   transform: translateY(0) scale(1);
 }

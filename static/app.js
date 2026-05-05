@@ -1,3 +1,5 @@
+document.documentElement.classList.add("can-reveal");
+
 const revealItems = document.querySelectorAll("[data-reveal]");
 
 const observer = new IntersectionObserver(
@@ -15,6 +17,10 @@ revealItems.forEach((item, index) => {
   item.style.setProperty("--delay", `${Math.min(index * 70, 420)}ms`);
   observer.observe(item);
 });
+
+setTimeout(() => {
+  revealItems.forEach((item) => item.classList.add("is-visible"));
+}, 900);
 
 document.querySelectorAll(".inspiration-card").forEach((card) => {
   card.addEventListener("pointermove", (event) => {
