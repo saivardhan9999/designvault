@@ -633,7 +633,7 @@ body {
 }
 
 .scalify-login {
-  min-height: 100vh;
+  min-height: calc(100vh - 24px);
   width: min(1280px, calc(100% - 32px));
   margin: 0 auto;
   display: grid;
@@ -641,6 +641,87 @@ body {
   gap: 28px;
   align-items: center;
   padding: 36px 0;
+}
+
+.public-flow {
+  width: min(1280px, calc(100% - 32px));
+  margin: 0 auto 56px;
+  display: grid;
+  gap: 28px;
+}
+
+.public-audit,
+.public-builder,
+.public-packages {
+  border: 1px solid var(--sc-line);
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 7px),
+    linear-gradient(145deg, rgba(20, 20, 22, 0.96), rgba(5, 5, 6, 0.96));
+  padding: 34px;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48);
+}
+
+.public-audit {
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.audit-demo {
+  display: grid;
+  grid-template-columns: 1fr 72px 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.audit-demo article {
+  min-height: 280px;
+  border: 1px solid var(--sc-line);
+  background: #101011;
+  padding: 24px;
+}
+
+.audit-demo span,
+.public-style-grid span {
+  color: var(--sc-muted);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.audit-demo b {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  background: var(--sc-red);
+}
+
+.public-builder,
+.public-packages {
+  display: grid;
+  gap: 24px;
+}
+
+.public-style-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.public-style-grid article {
+  min-height: 190px;
+  border: 1px solid var(--sc-line);
+  background: linear-gradient(160deg, rgba(255, 40, 40, 0.14), rgba(255, 255, 255, 0.045));
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.public-style-grid strong {
+  font-size: 1.4rem;
+  line-height: 1.1;
 }
 
 .money-stage,
@@ -1203,21 +1284,25 @@ select {
   .scalify-login,
   .scalify-hero,
   .audit-arena,
+  .public-audit,
   .cart-lane {
     grid-template-columns: 1fr;
   }
 
   .choice-row,
   .package-grid,
-  .industry-grid {
+  .industry-grid,
+  .public-style-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .versus-grid {
+  .versus-grid,
+  .audit-demo {
     grid-template-columns: 1fr;
   }
 
-  .vs-pill {
+  .vs-pill,
+  .audit-demo b {
     margin: 0 auto;
   }
 }
@@ -1248,7 +1333,8 @@ select {
 
   .choice-row,
   .package-grid,
-  .industry-grid {
+  .industry-grid,
+  .public-style-grid {
     grid-template-columns: 1fr;
   }
 
