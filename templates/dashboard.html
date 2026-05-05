@@ -6,12 +6,13 @@
 <header class="topbar">
   <a class="brand-row" href="{{ url_for('dashboard') }}">
     <div class="brand-mark">DV</div>
-    <span>DesignVault</span>
+    <span>DesignVault.ai</span>
   </a>
   <nav class="top-actions" aria-label="Dashboard">
-    <a href="#brief">Brief</a>
-    <a href="#vault">Vault</a>
-    <a href="#presets">Presets</a>
+    <a href="#audit">Audit</a>
+    <a href="#build">Build</a>
+    <a href="#order">Order</a>
+    <a href="#cart">Cart</a>
     <form method="post" action="{{ url_for('logout') }}">
       <button class="ghost-btn" type="submit">Logout</button>
     </form>
@@ -19,91 +20,192 @@
 </header>
 
 <main class="dashboard-shell">
-  <section class="dashboard-hero" data-reveal>
-    <div>
-      <p class="eyebrow">Welcome, {{ user.name }}</p>
-      <h1>Your design command centre.</h1>
-      <p>Generate directions, compare palettes, and keep the best visual routes in one fast-moving vault.</p>
+  <section class="scalify-hero" data-reveal>
+    <div class="hero-left">
+      <p class="eyebrow">0/9 steps</p>
+      <h1>Welcome to DesignVault.ai</h1>
+      <p>Order a polished website direction with an audit game, live preview, style chooser, package cart, and saved design vault.</p>
+      <a class="primary-btn start-btn" href="#audit">Start <span aria-hidden="true">-></span></a>
     </div>
-    <aside class="score-tower" aria-label="Vault score">
-      <span>Vault fit score</span>
-      <strong>{{ avg_score }}</strong>
-      <small>{{ saved_count }} saved directions</small>
+    <aside class="cash-card" aria-label="Cart total">
+      <div class="cash-strip">$100 UNITED STATES DV947</div>
+      <span>Your Cart</span>
+      <strong>${{ "{:,}".format(total) }}</strong>
+      <small>{{ package.name }}</small>
     </aside>
   </section>
 
-  <section class="metric-strip" data-reveal>
+  <section class="metric-strip step-cards" data-reveal>
     <article>
-      <span>Inspirations</span>
-      <strong>{{ vault.inspirations|length }}</strong>
+      <span>1. Audit</span>
+      <strong>Scan site</strong>
     </article>
     <article>
-      <span>Saved</span>
-      <strong>{{ saved_count }}</strong>
+      <span>2. Build</span>
+      <strong>Pick style</strong>
     </article>
     <article>
-      <span>Briefs</span>
-      <strong>{{ vault.briefs|length }}</strong>
+      <span>3. Compare</span>
+      <strong>Old vs new</strong>
     </article>
     <article>
-      <span>Current filter</span>
-      <strong>{{ category }} / {{ style }}</strong>
+      <span>4. Order</span>
+      <strong>Checkout</strong>
     </article>
   </section>
 
-  <section class="work-grid">
-    <form id="brief" class="brief-lab" method="post" action="{{ url_for('add_brief') }}" data-reveal>
-      <p class="eyebrow">Guided builder</p>
-      <h2>Create a direction</h2>
+  <section id="audit" class="audit-arena">
+    <form class="audit-form" method="post" action="{{ url_for('audit') }}" data-reveal>
+      <p class="eyebrow">Get a free website audit in minutes</p>
+      <h2>What's your business called?</h2>
       <label>
-        Brand or project
-        <input name="business" placeholder="Aurora Labs" required>
+        Business name
+        <input name="business" placeholder="Aurora Labs" value="{{ vault.audit.business or '' }}" required>
+      </label>
+      <label>
+        Current website
+        <input name="website" placeholder="https://your-old-site.com" value="{{ vault.audit.website or '' }}">
       </label>
       <label>
         Industry
-        <input name="industry" placeholder="SaaS, fashion, finance..." required>
-      </label>
-      <label>
-        Style
-        <select name="style">
-          {% for preset in presets.keys() %}
-            <option value="{{ preset }}">{{ preset }}</option>
+        <select name="industry">
+          {% for item in industries %}
+            <option value="{{ item }}" {% if vault.audit.industry == item %}selected{% endif %}>{{ item }}</option>
           {% endfor %}
         </select>
       </label>
-      <button class="primary-btn" type="submit">Generate direction <span aria-hidden="true">-></span></button>
+      <label>
+        Design style
+        <select name="style">
+          {% for preset in presets.keys() %}
+            <option value="{{ preset }}" {% if vault.audit.style == preset %}selected{% endif %}>{{ preset }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button class="primary-btn" type="submit">Scan my site <span aria-hidden="true">-></span></button>
     </form>
 
-    <section class="brief-history" data-reveal>
-      <p class="eyebrow">Latest briefs</p>
-      <h2>Recent outputs</h2>
-      {% if vault.briefs %}
-        <div class="mini-list">
-          {% for brief in vault.briefs[:4] %}
-            <article class="mini-item">
-              <div>
-                <strong>{{ brief.business }}</strong>
-                <span>{{ brief.industry }} / {{ brief.style }}</span>
-              </div>
-              <div class="palette" aria-label="Palette">
-                {% for color in brief.colors %}
-                  <i style="background: {{ color }}"></i>
-                {% endfor %}
-              </div>
-              <b>{{ brief.score }}</b>
-            </article>
-          {% endfor %}
-        </div>
-      {% else %}
-        <p class="empty-copy">Create your first direction and it will appear here.</p>
-      {% endif %}
+    <section class="audit-screen" data-reveal>
+      <div class="scanner-head">
+        <span>SCANNING...</span>
+        <strong>SITE SCORE</strong>
+        <b>{{ vault.audit.score or 0 }}/10</b>
+      </div>
+      <div class="versus-grid">
+        <article class="old-site">
+          <span>Current Website</span>
+          <h3>{{ vault.audit.website or "your-old-site.com" }}</h3>
+          <ul>
+            {% for issue in vault.audit.issues or ["Outdated design", "Poor mobile experience", "Low conversion potential"] %}
+              <li>{{ issue }}</li>
+            {% endfor %}
+          </ul>
+        </article>
+        <div class="vs-pill">VS</div>
+        <article class="new-site">
+          <span>New Website</span>
+          <h3>{{ vault.audit.new_url or "https://your-new-website.com" }}</h3>
+          <div class="preview-bars"><i></i><i></i><i></i><i></i></div>
+          <p>{{ vault.audit.business or "Your business" }} gets a cleaner hero, sharper CTA, stronger sections, and a launch-ready visual direction.</p>
+        </article>
+      </div>
     </section>
   </section>
 
+  <section id="build" class="builder-stage" data-reveal>
+    <div>
+      <p class="eyebrow">Click to customize your own website</p>
+      <h2>Pick design & colours</h2>
+    </div>
+    <div class="choice-row">
+      {% for name, colors in presets.items() %}
+        <form method="post" action="{{ url_for('add_brief') }}">
+          <input type="hidden" name="business" value="{{ vault.audit.business or 'New Website' }}">
+          <input type="hidden" name="industry" value="{{ vault.audit.industry or 'Technology' }}">
+          <input type="hidden" name="style" value="{{ name }}">
+          <button class="choice-card" type="submit">
+            <span>{{ name }}</span>
+            <div class="palette">
+              {% for color in colors %}
+                <i style="background: {{ color }}"></i>
+              {% endfor %}
+            </div>
+          </button>
+        </form>
+      {% endfor %}
+    </div>
+    <div class="industry-grid">
+      {% for industry in industries %}
+        <span>{{ industry }}</span>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="order" class="package-zone" data-reveal>
+    <div class="section-heading">
+      <p class="eyebrow">Scalify-style package selector</p>
+      <h2>Ready to order your new website?</h2>
+    </div>
+    <div class="package-grid">
+      {% for package_id, item in packages.items() %}
+        <article class="package-card {% if item.name == package.name %}active{% endif %}">
+          <span>{{ "POPULAR" if package_id == "pro" else "COMING SOON" if package_id == "elite" else "STARTER" }}</span>
+          <h3>{{ item.name }}</h3>
+          <strong>${{ "{:,}".format(item.price) }}</strong>
+          <ul>
+            {% for feature in item.features %}
+              <li>{{ feature }}</li>
+            {% endfor %}
+          </ul>
+          <form method="post" action="{{ url_for('choose_package', package_id=package_id) }}">
+            <button class="primary-btn" type="submit">Select package</button>
+          </form>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="cart" class="cart-lane" data-reveal>
+    <div class="cart-panel">
+      <p class="eyebrow">Your cart</p>
+      <h2>{{ package.name }}</h2>
+      <div class="cart-line"><span>Website Package</span><strong>${{ "{:,}".format(package.price) }}</strong></div>
+      <div class="addon-list">
+        {% for addon_id, addon in addons.items() %}
+          <form method="post" action="{{ url_for('toggle_addon', addon_id=addon_id) }}">
+            <button class="addon-toggle {% if addon in selected_addons %}active{% endif %}" type="submit">
+              <span>{{ "OK" if addon in selected_addons else "+" }}</span>
+              <b>{{ addon.name }}</b>
+              <strong>${{ "{:,}".format(addon.price) }}</strong>
+            </button>
+          </form>
+        {% endfor %}
+      </div>
+      <div class="cart-total"><span>Total</span><strong>${{ "{:,}".format(total) }}</strong></div>
+      <form method="post" action="{{ url_for('checkout') }}">
+        <button class="primary-btn checkout-btn" type="submit">Checkout</button>
+      </form>
+      <small>Secure demo checkout. No real payment is taken.</small>
+    </div>
+    <div class="timer-panel">
+      <p class="eyebrow">Time remaining</p>
+      <strong id="countdown">10:00</strong>
+      <p>Earn 50% off if you order within 10 minutes.</p>
+    </div>
+  </section>
+
+  {% if vault.orders %}
+    <section id="confirmed" class="confirmed-panel" data-reveal>
+      <p class="eyebrow">Order confirmed</p>
+      <h2>Your new website direction is being built.</h2>
+      <p>Order {{ vault.orders[0].id }} for {{ vault.orders[0].business }} / {{ vault.orders[0].package }} / ${{ "{:,}".format(vault.orders[0].total) }}.</p>
+    </section>
+  {% endif %}
+
   <section class="filter-band" data-reveal>
     <div>
-      <p class="eyebrow">Reference scanner</p>
-      <h2>Vault inspirations</h2>
+      <p class="eyebrow">Design vault</p>
+      <h2>Saved website directions</h2>
     </div>
     <form method="get" class="filter-form">
       <select name="category">

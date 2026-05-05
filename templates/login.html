@@ -3,48 +3,38 @@
 {% block title %}DesignVault Login{% endblock %}
 
 {% block content %}
-<main class="login-shell">
-  <section class="login-hero" data-reveal>
+<main class="scalify-login">
+  <section class="money-stage" data-reveal>
     <nav class="brand-row" aria-label="Brand">
       <div class="brand-mark">DV</div>
-      <span>DesignVault</span>
+      <span>DesignVault.ai</span>
     </nav>
-    <div class="hero-copy">
-      <p class="eyebrow">AI-style design operating room</p>
-      <h1>Turn raw taste into a launch-ready visual system.</h1>
-      <p>
-        Build moodboards, score palettes, save references, and generate a sharp
-        design direction before the first pixel gets wasted.
-      </p>
+    <div class="bill-stack" aria-hidden="true">
+      <div>$100 DESIGN CREDIT</div>
+      <div>$100 UNITED STATES DV947</div>
+      <div>ONE HUNDRED PIXELS 100</div>
     </div>
-    <div class="process-grid" aria-label="Design process">
-      <article class="process-card">
-        <span>01</span>
-        <strong>Brand DNA</strong>
-        <small>Capture the idea, audience, and category.</small>
-      </article>
-      <article class="process-card">
-        <span>02</span>
-        <strong>Style Match</strong>
-        <small>Choose bold, luxury, minimal, playful, or corporate.</small>
-      </article>
-      <article class="process-card">
-        <span>03</span>
-        <strong>Palette Score</strong>
-        <small>Compare colour systems with visual fit scores.</small>
-      </article>
-      <article class="process-card">
-        <span>04</span>
-        <strong>Launch Board</strong>
-        <small>Save the strongest directions into your vault.</small>
-      </article>
+    <div class="robot-console">
+      <span></span>
+      <b>DV</b>
+      <small>AI WEBSITE ORDERING SYSTEM</small>
+    </div>
+    <div class="hero-copy">
+      <p class="eyebrow">Welcome to DesignVault.ai</p>
+      <h1>The fastest way to order a website direction.</h1>
+      <p>Start with an audit, pick the design style, build your cart, and confirm a launch-ready website package in minutes.</p>
+    </div>
+    <div class="step-ribbon">
+      <span>1. Audit scan</span>
+      <span>2. Pick design & colours</span>
+      <span>3. Order website</span>
     </div>
   </section>
 
-  <section class="auth-panel" data-reveal>
+  <section class="auth-panel order-panel" data-reveal>
     <div class="panel-topline"></div>
-    <p class="eyebrow">Secure workspace</p>
-    <h2>{{ "Create Vault" if mode == "register" else "Login" }}</h2>
+    <p class="eyebrow">Access point</p>
+    <h2>{{ "Create Account" if mode == "register" else "Login" }}</h2>
     {% if message %}
       <p class="message">{{ message }}</p>
     {% endif %}
@@ -65,7 +55,7 @@
         <input type="password" name="password" placeholder="Demo password" autocomplete="current-password">
       </label>
       <button class="primary-btn" type="submit">
-        {{ "Build my vault" if mode == "register" else "Enter vault" }}
+        {{ "Start ordering" if mode == "register" else "Enter system" }}
         <span aria-hidden="true">-></span>
       </button>
     </form>

@@ -25,3 +25,14 @@ document.querySelectorAll(".inspiration-card").forEach((card) => {
     card.style.setProperty("--y", `${y}%`);
   });
 });
+
+const countdown = document.querySelector("#countdown");
+if (countdown) {
+  let seconds = 600;
+  setInterval(() => {
+    seconds = Math.max(0, seconds - 1);
+    const minutes = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const rest = String(seconds % 60).padStart(2, "0");
+    countdown.textContent = `${minutes}:${rest}`;
+  }, 1000);
+}
